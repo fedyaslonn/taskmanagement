@@ -1,6 +1,7 @@
 import os
 
 from celery import Celery
+from celery.schedules import crontab
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'taskmanagement.settings')
@@ -20,3 +21,13 @@ app.autodiscover_tasks()
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+
+app.conf.beat_schedule = {
+    'daily-report': {
+            'task': 'auth.tasks.admin_notification',
+            'schedule': 20.0,
+},
+}
+
+app.conf.timezone = 'UTC'

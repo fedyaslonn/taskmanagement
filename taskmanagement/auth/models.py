@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .celerytask import send_email
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-
+from django.core.mail import send_mail
+from celery import shared_task
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 # Create your models here.
 
 class CustomUser(AbstractUser):
@@ -17,3 +19,4 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+

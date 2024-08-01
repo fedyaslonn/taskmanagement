@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'taskmanager.apps.TaskmanagerConfig',
-    'auth.apps.AuthConfig'
+    'auth.apps.AuthConfig',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -176,6 +177,7 @@ SIMPLE_JWT = {
 }
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_DATABASE_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 CACHES = {
     'default': {

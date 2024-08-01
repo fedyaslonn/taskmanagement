@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.cache import cache
 from .celerytask import send_email
+from .signals import send_welcome_email
 
 # Create your views here.
 
