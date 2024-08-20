@@ -7,6 +7,7 @@ from .serializers import TaskSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from django.core.cache import cache
+from django.db.models import Q
 
 # Create your views here.
 
@@ -63,3 +64,17 @@ class TaskDeleteAPIView(APIView):
             return Response({'message': 'Таска не найдена'}, status=status.HTTP_404_NOT_FOUND)
         task.delete()
         return Response({'message': 'Таска успешно удалена'}, status=status.HTTP_204_NO_CONTENT)
+
+class TaskSearchAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('query', '')
+        if not query:
+            return Response({'message': 'Пустой запрос'}, status=status.HTTP_400_BAD_REQUEST)
+        if query:
+            tasks = Task.objects.filter(Q(title__icontains=query) | Q(description__icontains=query), user=request.user)
+            if tasks.exists():
+                serializer = TaskSerializer(tasks, many=True)
+                return Response(serializer.data)
+            return Response({'message': 'Ничего не было найдено'}, status=status.HTTP_404_NOT_FOUND)
